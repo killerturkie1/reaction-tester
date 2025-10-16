@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <title>Reactie Tester</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #f5f5f5;
+      margin: 0;
+      padding: 0;
+    }
+
+    h1 {
+      margin-top: 50px;
+    }
+
+    #test-area {
+      margin: 50px auto;
+      width: 300px;
+      height: 200px;
+      background-color: #ddd;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 20px;
+      transition: background-color 0.3s;
+    }
+
+    #start-btn {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin-top: 20px;
+      cursor: pointer;
+    }
+
+    #result {
+      margin-top: 20px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>Reactie Tester</h1>
+  <div id="test-area">Klik op "Start Test"</div>
+  <button id="start-btn">Start Test</button>
+  <div id="result"></div>
+
+  <script>
+    const testArea = document.getElementById('test-area');
+    const startBtn = document.getElementById('start-btn');
+    const result = document.getElementById('result');
+
+    let startTime;
+    let timeout;
+    let waitingForClick = false;
+
+    startBtn.addEventListener('click', () => {
+      result.textContent = "";
+      testArea.style.backgroundColor = '#ddd';
+      testArea.textContent = "Wacht op groen...";
+      waitingForClick = false;
+
+      const delay = Math.random() * 3000 + 2000; // 2-5 seconden
+
+      timeout = setTimeout(() => {
+        testArea.style.backgroundColor = '#4CAF50'; // groen
+        testArea.textContent = "KLIK NU!";
+        startTime = Date.now();
+        waitingForClick = true;
+      }, delay);
+    });
+
+    testArea.addEventListener('click', () => {
+      if (!startTime) return;
+
+      if (waitingForClick) {
+        const reactionTime = Date.now() - startTime;
+        result.textContent = `Je reactietijd: ${reactionTime} ms`;
+        testArea.textContent = "Klik op 'Start Test' om opnieuw te proberen";
+        testArea.style.backgroundColor = '#ddd';
+        waitingForClick = false;
+      } else {
+        clearTimeout(timeout);
+        result.textContent = "Te vroeg! Wacht op groen.";
+        testArea.textContent = "Klik op 'Start Test' om opnieuw te proberen";
+        testArea.style.backgroundColor = '#f44336'; // rood
+      }
+    });
+  </script>
+</body>
+</html>
